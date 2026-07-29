@@ -21,20 +21,31 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
   ) {}
 
   async onModuleInit() {
+    const redisUrl = this.configService.get<string>('REDIS_URL');
     const host = this.configService.get<string>('REDIS_HOST') || 'localhost';
     const port = this.configService.get<number>('REDIS_PORT') || 6379;
 
-    this.logger.log(`Attempting to connect to Redis at ${host}:${port}`);
+    this.logger.log(
+      redisUrl 
+        ? 'Attempting to connect to Redis using REDIS_URL' 
+        : `Attempting to connect to Redis at ${host}:${port}`
+    );
 
     let connection: Redis | null = null;
     try {
-      // 1. Create a Redis connection client to verify connection
-      connection = new Redis({
-        host,
-        port,
-        maxRetriesPerRequest: null, // Required by BullMQ
-        connectTimeout: 2000,       // Fast fail
-      });
+      if (redisUrl) {
+        connection = new Redis(redisUrl, {
+          maxRetriesPerRequest: null,
+          connectTimeout: 5000,
+        });
+      } else {
+        connection = new Redis({
+          host,
+          port,
+          maxRetriesPerRequest: null,
+          connectTimeout: 2000,
+        });
+      }
 
       // Bind error listener to avoid Unhandled error warnings
       connection.on('error', () => {});

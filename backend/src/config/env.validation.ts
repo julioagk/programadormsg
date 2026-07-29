@@ -1,5 +1,5 @@
 import { plainToInstance, Type } from 'class-transformer';
-import { IsEnum, IsNumber, IsString, validateSync } from 'class-validator';
+import { IsEnum, IsNumber, IsOptional, IsString, validateSync } from 'class-validator';
 
 enum Environment {
   Development = 'development',
@@ -17,6 +17,10 @@ class EnvironmentVariables {
 
   @IsString()
   DATABASE_URL: string;
+
+  @IsString()
+  @IsOptional()
+  REDIS_URL?: string;
 
   @IsString()
   REDIS_HOST = 'localhost';
@@ -39,13 +43,16 @@ class EnvironmentVariables {
   S3_PORT = 9000;
 
   @IsString()
-  S3_ACCESS_KEY: string;
+  @IsOptional()
+  S3_ACCESS_KEY?: string;
 
   @IsString()
-  S3_SECRET_KEY: string;
+  @IsOptional()
+  S3_SECRET_KEY?: string;
 
   @IsString()
-  S3_BUCKET_NAME: string;
+  @IsOptional()
+  S3_BUCKET_NAME?: string;
 }
 
 export function validateEnv(config: Record<string, any>) {
