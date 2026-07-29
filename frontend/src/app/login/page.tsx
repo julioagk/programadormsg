@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { apiFetch } from '@/lib/api';
-import { Mail, Lock, Loader2, MessageSquare, AlertCircle } from 'lucide-react';
+import { Mail, Lock, Loader2, MessageSquare, AlertCircle, Eye, EyeOff } from 'lucide-react';
 
 export default function Login() {
   const router = useRouter();
@@ -11,6 +11,7 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -102,13 +103,21 @@ export default function Login() {
                 <Lock className="absolute left-3.5 text-muted-foreground pointer-events-none" size={16} />
                 <input
                   id="password"
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full rounded-xl border border-input bg-white/50 pl-11 pr-4 py-2.5 text-sm text-foreground placeholder-muted-foreground shadow-sm transition-all focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-emerald-500/10"
+                  className="w-full rounded-xl border border-input bg-white/50 pl-11 pr-10 py-2.5 text-sm text-foreground placeholder-muted-foreground shadow-sm transition-all focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-emerald-500/10"
                   placeholder="••••••••"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3.5 text-muted-foreground hover:text-foreground transition-colors focus:outline-none"
+                  title={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                >
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
               </div>
             </div>
 

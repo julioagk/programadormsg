@@ -12,7 +12,9 @@ import {
   AlertCircle, 
   CheckCircle2,
   Shield,
-  User as UserIcon
+  User as UserIcon,
+  Eye,
+  EyeOff
 } from 'lucide-react';
 
 interface UserData {
@@ -37,6 +39,9 @@ export default function UserManagement() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [role, setRole] = useState('USER');
   const [modalError, setModalError] = useState<string | null>(null);
   const [creating, setCreating] = useState(false);
@@ -77,6 +82,12 @@ export default function UserManagement() {
     setModalError(null);
     setCreating(true);
 
+    if (password !== confirmPassword) {
+      setModalError('Las contraseñas no coinciden');
+      setCreating(false);
+      return;
+    }
+
     try {
       await apiFetch('/auth/register', {
         method: 'POST',
@@ -90,6 +101,9 @@ export default function UserManagement() {
       setName('');
       setEmail('');
       setPassword('');
+      setConfirmPassword('');
+      setShowPassword(false);
+      setShowConfirmPassword(false);
       setRole('USER');
       
       // Refresh list
@@ -319,15 +333,50 @@ export default function UserManagement() {
                 <label className="text-xs font-semibold text-muted-foreground" htmlFor="modal-password">
                   Contraseña
                 </label>
-                <input
-                  id="modal-password"
-                  type="password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="•••••••• (mínimo 6 caracteres)"
-                  className="w-full rounded-lg border border-input bg-background px-3.5 py-2 text-sm text-foreground shadow-sm transition-colors focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring"
-                />
+                <div className="relative flex items-center">
+                  <input
+                    id="modal-password"
+                    type={showPassword ? 'text' : 'password'}
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="•••••••• (mínimo 6 caracteres)"
+                    className="w-full rounded-lg border border-input bg-background pl-3.5 pr-10 py-2 text-sm text-foreground shadow-sm transition-colors focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 text-muted-foreground hover:text-foreground transition-colors focus:outline-none"
+                    title={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                  >
+                    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-muted-foreground" htmlFor="modal-confirm-password">
+                  Confirmar Contraseña
+                </label>
+                <div className="relative flex items-center">
+                  <input
+                    id="modal-confirm-password"
+                    type={showConfirmPassword ? 'text' : 'password'}
+                    required
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder="••••••••"
+                    className="w-full rounded-lg border border-input bg-background pl-3.5 pr-10 py-2 text-sm text-foreground shadow-sm transition-colors focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-3 text-muted-foreground hover:text-foreground transition-colors focus:outline-none"
+                    title={showConfirmPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                  >
+                    {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                </div>
               </div>
 
               <div className="space-y-1.5">

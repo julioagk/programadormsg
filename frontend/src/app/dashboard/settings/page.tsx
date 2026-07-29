@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { apiFetch } from '@/lib/api';
-import { Save, Key, User, Settings as SettingsIcon, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { Save, Key, User, Settings as SettingsIcon, AlertCircle, CheckCircle2, Eye, EyeOff } from 'lucide-react';
 
 export default function Settings() {
   // Profile & Config State
@@ -16,6 +16,9 @@ export default function Settings() {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   // Alerts
   const [profileSuccess, setProfileSuccess] = useState<string | null>(null);
@@ -98,6 +101,9 @@ export default function Settings() {
       setCurrentPassword('');
       setNewPassword('');
       setConfirmPassword('');
+      setShowCurrentPassword(false);
+      setShowNewPassword(false);
+      setShowConfirmPassword(false);
     } catch (err: any) {
       setPasswordError(err.message || 'Error al cambiar la contraseña');
     } finally {
@@ -245,35 +251,65 @@ export default function Settings() {
             <form onSubmit={handleChangePassword} className="space-y-4">
               <div className="space-y-1.5">
                 <label className="text-sm font-medium text-muted-foreground">Contraseña Actual</label>
-                <input
-                  type="password"
-                  required
-                  value={currentPassword}
-                  onChange={(e) => setCurrentPassword(e.target.value)}
-                  className="w-full rounded-lg border border-input bg-background px-3.5 py-2 text-sm text-foreground placeholder-muted-foreground focus:border-ring focus:outline-none"
-                />
+                <div className="relative flex items-center">
+                  <input
+                    type={showCurrentPassword ? 'text' : 'password'}
+                    required
+                    value={currentPassword}
+                    onChange={(e) => setCurrentPassword(e.target.value)}
+                    className="w-full rounded-lg border border-input bg-background pl-3.5 pr-10 py-2 text-sm text-foreground placeholder-muted-foreground focus:border-ring focus:outline-none"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                    className="absolute right-3 text-muted-foreground hover:text-foreground transition-colors focus:outline-none"
+                    title={showCurrentPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                  >
+                    {showCurrentPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                </div>
               </div>
 
               <div className="space-y-1.5">
                 <label className="text-sm font-medium text-muted-foreground">Nueva Contraseña</label>
-                <input
-                  type="password"
-                  required
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  className="w-full rounded-lg border border-input bg-background px-3.5 py-2 text-sm text-foreground placeholder-muted-foreground focus:border-ring focus:outline-none"
-                />
+                <div className="relative flex items-center">
+                  <input
+                    type={showNewPassword ? 'text' : 'password'}
+                    required
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    className="w-full rounded-lg border border-input bg-background pl-3.5 pr-10 py-2 text-sm text-foreground placeholder-muted-foreground focus:border-ring focus:outline-none"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowNewPassword(!showNewPassword)}
+                    className="absolute right-3 text-muted-foreground hover:text-foreground transition-colors focus:outline-none"
+                    title={showNewPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                  >
+                    {showNewPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                </div>
               </div>
 
               <div className="space-y-1.5">
                 <label className="text-sm font-medium text-muted-foreground">Confirmar Nueva Contraseña</label>
-                <input
-                  type="password"
-                  required
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="w-full rounded-lg border border-input bg-background px-3.5 py-2 text-sm text-foreground placeholder-muted-foreground focus:border-ring focus:outline-none"
-                />
+                <div className="relative flex items-center">
+                  <input
+                    type={showConfirmPassword ? 'text' : 'password'}
+                    required
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    className="w-full rounded-lg border border-input bg-background pl-3.5 pr-10 py-2 text-sm text-foreground placeholder-muted-foreground focus:border-ring focus:outline-none"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-3 text-muted-foreground hover:text-foreground transition-colors focus:outline-none"
+                    title={showConfirmPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                  >
+                    {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                </div>
               </div>
 
               <button
