@@ -154,7 +154,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
       {/* Main Content Area */}
       <main className="flex-1 overflow-y-auto bg-[radial-gradient(circle_at_bottom_right,_var(--tw-gradient-stops))] from-zinc-50/50 via-background to-background py-6 px-7">
-        <div className="max-w-4xl mx-auto space-y-5">
+        <div className="w-full space-y-5">
           {children}
         </div>
       </main>
