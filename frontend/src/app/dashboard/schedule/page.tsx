@@ -263,7 +263,7 @@ export default function ScheduleMessage() {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-5">
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Programar Envío</h1>
@@ -286,9 +286,9 @@ export default function ScheduleMessage() {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="grid gap-8 md:grid-cols-3">
+      <form onSubmit={handleSubmit} className="grid gap-5 md:grid-cols-3">
         {/* Left column: Message compose */}
-        <div className="md:col-span-2 space-y-6">
+        <div className="md:col-span-2 space-y-4">
           <div className="rounded-xl border border-border bg-card text-card-foreground p-6 space-y-4 shadow-sm">
             <h2 className="text-lg font-semibold">1. Componer Mensaje</h2>
 
@@ -497,7 +497,7 @@ export default function ScheduleMessage() {
         </div>
 
         {/* Right column: Contact selection & Submit */}
-        <div className="space-y-6">
+        <div className="space-y-4">
           <div className="rounded-xl border border-border bg-card text-card-foreground p-6 space-y-4 shadow-sm">
             <h2 className="text-lg font-semibold">3. Destinatarios</h2>
             <ContactSelector 

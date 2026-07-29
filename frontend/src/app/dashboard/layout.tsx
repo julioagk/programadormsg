@@ -130,7 +130,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </div>
 
         {/* User Info / Logout */}
-        <div className="border-t border-border pt-5 space-y-3">
+        <div className="border-t border-border pt-4 space-y-2.5">
           <div className="flex items-center gap-3 px-3 py-2 bg-muted/40 rounded-xl border border-border/30">
             <div className="h-8 w-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-600 shrink-0">
               <User size={16} />
@@ -153,8 +153,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-1 overflow-y-auto bg-[radial-gradient(circle_at_bottom_right,_var(--tw-gradient-stops))] from-zinc-50/50 via-background to-background p-8">
-        <div className="max-w-4xl mx-auto space-y-8">
+      <main className="flex-1 overflow-y-auto bg-[radial-gradient(circle_at_bottom_right,_var(--tw-gradient-stops))] from-zinc-50/50 via-background to-background py-6 px-7">
+        <div className="max-w-4xl mx-auto space-y-5">
           {children}
         </div>
       </main>
