@@ -1,0 +1,132 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id                String             @id @default(uuid())
+  email             String             @unique
+  password          String
+  name              String?
+  role              String             @default("USER") // ADMIN, USER
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  whatsAppSession   WhatsAppSession?
+  scheduledMessages ScheduledMessage[]
+  settings          Settings?
+  templates         MessageTemplate[]
+}
+
+model Settings {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  minDelay  Int      @default(20) // in seconds
+  maxDelay  Int      @default(90) // in seconds
+  timezone  String   @default("UTC")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model WhatsAppSession {
+  id             String    @id @default(uuid())
+  userId         String    @unique
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status         String    @default("DISCONNECTED") // CONNECTED, DISCONNECTED, CONNECTING
+  phoneNumber    String?
+  profileName    String?
+  connectedAt    DateTime?
+  sessionData    Json?     // Stores Baileys multi-device auth state
+  qrCode         String?   // Current base64/text QR code to display
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  contacts       WhatsAppContact[]
+}
+
+model WhatsAppContact {
+  id        String          @id @default(uuid())
+  sessionId String
+  session   WhatsAppSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  jid       String          // WhatsApp ID: "5215555555555@s.whatsapp.net"
+  name      String?
+  pushName  String?
+  verified  Boolean         @default(true)
+
+  @@unique([sessionId, jid])
+  @@index([sessionId])
+}
+
+model MessageTemplate {
+  id          String                      @id @default(uuid())
+  userId      String
+  user        User                        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name        String
+  message     String
+  createdAt   DateTime                    @default(now())
+  updatedAt   DateTime                    @updatedAt
+  attachments MessageTemplateAttachment[]
+}
+
+model MessageTemplateAttachment {
+  id         String          @id @default(uuid())
+  templateId String
+  template   MessageTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  fileName   String
+  fileUrl    String
+  mimeType   String
+  fileSize   Int
+}
+
+model ScheduledMessage {
+  id          String                      @id @default(uuid())
+  userId      String
+  user        User                        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title       String?
+  message     String
+  scheduledAt DateTime
+  timezone    String
+  createdAt   DateTime                    @default(now())
+  updatedAt   DateTime                    @updatedAt
+  attachments ScheduledMessageAttachment[]
+  recipients  ScheduledMessageRecipient[]
+}
+
+model ScheduledMessageAttachment {
+  id                 String           @id @default(uuid())
+  scheduledMessageId String
+  scheduledMessage   ScheduledMessage @relation(fields: [scheduledMessageId], references: [id], onDelete: Cascade)
+  fileName           String
+  fileUrl            String
+  mimeType           String
+  fileSize           Int
+}
+
+model ScheduledMessageRecipient {
+  id                 String           @id @default(uuid())
+  scheduledMessageId String
+  scheduledMessage   ScheduledMessage @relation(fields: [scheduledMessageId], references: [id], onDelete: Cascade)
+  whatsappNumber     String           // e.g. "5218183000000"
+  contactName        String?          // Dynamic {{nombre}} resolver cached name
+  status             RecipientStatus  @default(PENDING)
+  errorLog           String?
+  sentAt             DateTime?
+  jobId              String?          // BullMQ Job ID to allow canceling
+  runAt              DateTime?        // Staggered scheduled run time
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+
+  @@index([scheduledMessageId])
+  @@index([status])
+}
+
+enum RecipientStatus {
+  PENDING
+  SENDING
+  SENT
+  ERROR
+  CANCELLED
+}
